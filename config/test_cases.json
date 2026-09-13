@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể cho tôi biết bạn hỗ trợ theo dõi thông báo từ những kênh nào và có những chức năng chính gì?",
+    "expected_behavior": "Agent trả lời trực tiếp từ System Prompt, giới thiệu các kênh hỗ trợ (Discord, Email, Zalo, GitHub) và tính năng tạo lịch mà không cần gọi Tool.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Kiểm tra xem có thông báo mới nào liên quan đến 'pull request' hoặc 'release' trên kênh GitHub không?",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, phát sinh Tool Call 'search_notifications' với platform='github' và query='release'.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Hãy thêm vào Google Calendar của tôi một sự kiện: 'Họp Review Sprint K4' vào lúc 09:00 ngày 20/09/2026 trên Google Meet.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'create_calendar_event' với đúng tiêu đề, thời gian và địa điểm.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tìm xem trên kênh Discord hoặc Zalo có thông báo nào về 'Lịch thuyết trình đồ án' không, nếu có hãy tự động thêm lịch đó vào Google Calendar giúp tôi.",
+    "expected_behavior": "Agent thực hiện chuỗi ReAct: Gọi 'search_notifications' tìm thông báo thuyết trình -> Trích xuất thời gian -> Gọi 'create_calendar_event' thêm vào lịch.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Tìm kiếm các thông báo liên quan đến 'chuyến bay du lịch Sao Hỏa' trên kênh Email của tôi.",
+    "expected_behavior": "Agent gọi Tool 'search_notifications', nhận kết quả NOT_FOUND và trả lời trung thực, lịch sự, không bịa đặt dữ liệu (Anti-Hallucination).",
+    "complexity": "Medium"
+  }
+]

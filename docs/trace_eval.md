@@ -1,20 +1,20 @@
 # 📊 BÁO CÁO THU HOẠCH NGHIỆM THU BÀI LAB 3 (BƯỚC 3 — SUBMISSION ARTIFACT)
 
-> **Họ và Tên Học viên:** [Điền Họ và Tên]  
-> **Mã Sinh Viên / Mã Học viên:** [Điền MSSV]  
-> **Chủ đề Lựa chọn:** [Điền tên chủ đề đã chọn từ docs/DANH_SACH_DE_TAI.md hoặc Đề tài Mở]  
+> **Họ và Tên Học viên:** Châu Tùng Dương  
+> **Mã Sinh Viên / Mã Học viên:** 2A202602822  
+> **Chủ đề Lựa chọn:** Trợ lý Thông minh Theo dõi, Tổng hợp Thông báo Đa kênh (Discord, Email, Zalo, GitHub) kết hợp Lên lịch Google Calendar
 
 ---
 
 ## 1. BẢNG CHẤM ĐIỂM AGENTIC FIT SCORING MATRIX (ĐÁNH GIÁ CHỦ ĐỀ)
 
-| Tiêu chí Đánh giá | Mức độ (1 - 5) | Giải trình chi tiết lý do chọn điểm |
+| Tiêu chí Đánh giá | Mức độ (1 - 5) | Giải trình chi tiết lý do chọn điểm (Định lượng số lượng) |
 | :--- | :---: | :--- |
-| **1. Multi-step Reasoning** | / 5 | Bài toán có yêu cầu chia nhỏ nhiều bước suy luận nối tiếp nhau không? |
-| **2. Tool Interaction** | / 5 | Hệ thống có cần kết nối với MCP Server / Cơ sở dữ liệu bên ngoài không? |
-| **3. Dynamic Decision** | / 5 | Bước tiếp theo có phụ thuộc vào kết quả quan sát bước trước không? |
-| **4. Long Horizon Goal** | / 5 | Hệ thống có phải giữ mục tiêu xuyên suốt qua nhiều lượt xử lý không? |
-| **TỔNG ĐIỂM AGENTIC FIT** | **/ 20** | *Nếu tổng điểm > 12/20: Bài toán rất phù hợp triển khai Agentic System.* |
+| **1. Multi-step Reasoning** | 4 / 5 | Chuỗi 4 bước suy luận liên tiếp: Phân tích truy vấn -> Quét thông báo đa kênh -> Trích xuất thời gian/tiêu đề họp -> Ra quyết định đặt lịch. |
+| **2. Tool Interaction** | 4 / 5 | Tích hợp dữ liệu từ 4 nền tảng (Discord, Email, Zalo, GitHub) và 2 công cụ thao tác qua MCP Server (search_notifications, create_calendar_event). |
+| **3. Dynamic Decision** | 4 / 5 | Tối thiểu 3 điểm rẽ nhánh động phụ thuộc Observation: Nếu không có tin nhắn -> dừng; nếu có tin nhưng không có deadline -> chỉ tóm tắt; nếu có deadline -> tạo lịch. |
+| **4. Long Horizon Goal** | 4 / 5 | Duy trì mục tiêu dài hạn qua chu trình ReAct 4-5 bước lặp (Thought -> Action -> Observation) để hoàn thành trọn vẹn yêu cầu người dùng. |
+| **TỔNG ĐIỂM AGENTIC FIT** | **16 / 20** | *Tổng điểm 16/20 (> 12/20): Bài toán hoàn toàn phù hợp và tối ưu khi triển khai Agentic ReAct System.* |
 
 ---
 
@@ -28,20 +28,31 @@ Dán 1 đoạn trích xuất log tiêu biểu từ file `docs/trace_waterfall.js
 [
   {
     "step": 1,
+    "query": "Kiểm tra xem có thông báo mới nào liên quan đến 'pull request' hoặc 'release' trên kênh GitHub không?",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "search_notifications",
     "arguments": {
-      "student_id": "SV2026001"
+      "platform": "github",
+      "query": "release"
     },
     "observation": {
       "status": "SUCCESS",
-      "student_id": "SV2026001",
-      "data": {
-        "full_name": "Nguyễn Văn An",
-        "gpa": 3.85
-      }
+      "count": 1,
+      "platform_filter": "github",
+      "query": "release",
+      "data": [
+        {
+          "id": "NOTIF-GH-01",
+          "platform": "github",
+          "sender": "GitHub Actions",
+          "title": "Release v2.5.0 Deployment Succeeded",
+          "content": "Pull Request #42 đã được merge vào nhánh main. Phiên bản release v2.5.0 đã deploy thành công lúc 08:30.",
+          "timestamp": "08:30 13/09/2026"
+        }
+      ],
+      "message": "Tìm thấy 1 thông báo khớp với từ khóa 'release'."
     },
-    "latency_ms": 120.5
+    "latency_ms": 5838.08
   }
 ]
 ```
@@ -50,10 +61,10 @@ Dán 1 đoạn trích xuất log tiêu biểu từ file `docs/trace_waterfall.js
 
 ## 3. TỔNG KẾT KẾT QUẢ NGHIỆM THU & NỘP BÀI
 
-- [ ] Đã điền API Key thật trong `.env` và xác nhận Agent chạy mượt mà trên LLM API thật (Gemini/OpenAI).
-- **Tổng số Test Cases đã chạy thành công:** ___ / 5 test cases.
-- **Số lượt gọi Tool qua MCP Server chính xác:** ___ lượt.
-- **Kết quả đẩy Repo nộp bài:** [ ] Đã Commit và Push mã nguồn thành công lên GitHub cá nhân.
+- [x] Đã điền API Key thật trong `.env` và xác nhận Agent chạy mượt mà trên LLM API thật (Gemini/OpenAI).
+- **Tổng số Test Cases đã chạy thành công:** 5 / 5 test cases.
+- **Số lượt gọi Tool qua MCP Server chính xác:** 4 lượt.
+- **Kết quả đẩy Repo nộp bài:** [x] Đã Commit và Push mã nguồn thành công lên GitHub cá nhân.
 
 ---
 

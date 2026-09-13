@@ -31,15 +31,22 @@ class MCPAcademicServer:
         [TASK 2.1] HỌC VIÊN HOÀN THIỆN HÀM THỰC THI TOOL TRÊN MCP SERVER
         Thực thi request gọi Tool theo chuẩn MCP JSON-RPC
         """
-        # --------------------------------------------------------------------------
-        # TODO 2.1: HỌC VIÊN HOÀN THIỆN HÀM GỌI TOOL CHUẨN MCP JSON-RPC
-        # 🎯 YÊU CẦU THỰC THI THUẬT TOÁN:
-        # 1. Gọi hàm dispatch_tool_call(tool_name, arguments) để lấy chuỗi JSON kết quả từ Tool Router.
-        # 2. Chuyển đổi chuỗi JSON kết quả thành Python Dictionary (dùng json.loads).
-        # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
-        #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
-        # --------------------------------------------------------------------------
-        return {}
+        # 1. Gọi router thực thi tool từ tools.py
+        raw_result_str = dispatch_tool_call(tool_name, arguments)
+        
+        # 2. Parse chuỗi JSON kết quả thành Dictionary
+        try:
+            content = json.loads(raw_result_str)
+        except Exception:
+            content = {"raw_output": raw_result_str}
+            
+        # 3. Đóng gói phản hồi chuẩn giao thức MCP JSON-RPC 2.0
+        return {
+            "jsonrpc": "2.0",
+            "server": self.server_name,
+            "tool": tool_name,
+            "result": content
+        }
 
 
 if __name__ == "__main__":
@@ -66,3 +73,12 @@ if __name__ == "__main__":
     else:
         print(f"✅ [TODO 2.1]: Test dispatch tool 'academic_query' thành công:")
         print(f"   Phản hồi JSON-RPC: {json.dumps(test_result, ensure_ascii=False)}")
+        
+    # Kiểm tra các Tools theo đề tài Trợ lý Thông báo & Calendar
+    test_notif = server.call_tool("search_notifications", {"query": "release", "platform": "github"})
+    print(f"✅ [MCP TEST]: Test dispatch 'search_notifications' (GitHub):")
+    print(f"   Kết quả: {test_notif.get('result', {}).get('message', '')}")
+    
+    test_cal = server.call_tool("create_calendar_event", {"title": "Họp Demo K4", "datetime_str": "09:00 20/09/2026"})
+    print(f"✅ [MCP TEST]: Test dispatch 'create_calendar_event':")
+    print(f"   Kết quả: {test_cal.get('result', {}).get('message', '')}")

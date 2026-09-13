@@ -1,29 +1,137 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, bạn có thể cho tôi biết bạn hỗ trợ theo dõi thông báo từ những kênh nào và có những chức năng chính gì?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn! Tôi là Trợ lý Tác tử Thông minh, sẵn sàng hỗ trợ bạn trong việc quản lý thông tin đa kênh và lịch trình cá nhân. \n\nDưới đây là các kênh hỗ trợ và những chức năng chính của tôi:\n\n### 1. Các kênh hỗ trợ theo dõi thông báo\nTôi có thể theo dõi và tìm kiếm thông báo/tin nhắn từ **4 nền tảng chính**:\n* **Email**\n* **Discord**\n* **Zalo**\n* **GitHub**\n\n---\n\n### 2. Các chức năng chính\n* **Tìm kiếm & Lọc thông báo đa kênh:** Tìm kiếm nhanh các tin nhắn, thông báo, thông tin quan trọng (deadline, cuộc họp, buổi thuyết trình, bài đăng mới,...) từ một kênh cụ thể hoặc trên toàn bộ các kênh theo từ khóa bạn yêu cầu.\n* **Tự động quản lý Google Calendar:** Lên lịch công việc, cuộc họp, sự kiện hoặc deadline trực tiếp vào Google Calendar từ các thông báo tìm được hoặc theo yêu cầu cá nhân của bạn.\n* **Hỗ trợ học vụ (VinUni):** Tra cứu hồ sơ thông tin học vụ của sinh viên và đặt lịch hẹn tư vấn với Cố vấn học tập.\n\nNếu bạn cần tìm kiếm thông báo nào hoặc muốn lên lịch sự kiện mới, hãy nhắn cho tôi biết nhé!",
+    "latency_ms": 8621.71
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Kiểm tra xem có thông báo mới nào liên quan đến 'pull request' hoặc 'release' trên kênh GitHub không?",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "search_notifications",
     "arguments": {
-      "student_id": "SV2026001"
+      "platform": "github",
+      "query": "release"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "count": 1,
+      "platform_filter": "github",
+      "query": "release",
+      "data": [
+        {
+          "id": "NOTIF-GH-01",
+          "platform": "github",
+          "sender": "GitHub Actions",
+          "title": "Release v2.5.0 Deployment Succeeded",
+          "content": "Pull Request #42 đã được merge vào nhánh main. Phiên bản release v2.5.0 đã deploy thành công lúc 08:30.",
+          "timestamp": "08:30 13/09/2026"
+        }
+      ],
+      "message": "Tìm thấy 1 thông báo khớp với từ khóa 'release'."
+    },
+    "latency_ms": 5838.08
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Kiểm tra xem có thông báo mới nào liên quan đến 'pull request' hoặc 'release' trên kênh GitHub không?",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "Tìm thấy 1 thông báo khớp với từ khóa 'release'.\n- [GITHUB] Release v2.5.0 Deployment Succeeded: Pull Request #42 đã được merge vào nhánh main. Phiên bản release v2.5.0 đã deploy thành công lúc 08:30. (Thời gian: 08:30 13/09/2026)",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Hãy thêm vào Google Calendar của tôi một sự kiện: 'Họp Review Sprint K4' vào lúc 09:00 ngày 20/09/2026 trên Google Meet.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "create_calendar_event",
+    "arguments": {
+      "title": "Họp Review Sprint K4",
+      "location_or_link": "Google Meet",
+      "datetime_str": "09:00 20/09/2026"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "event_id": "GCAL-EVT-6058",
+      "title": "Họp Review Sprint K4",
+      "datetime": "09:00 20/09/2026",
+      "location": "Google Meet",
+      "description": "",
+      "message": "Đã tạo thành công sự kiện 'Họp Review Sprint K4' trên Google Calendar vào lúc 09:00 20/09/2026 (Địa điểm: Google Meet)."
+    },
+    "latency_ms": 3396.57
+  },
+  {
+    "step": 2,
+    "query": "Hãy thêm vào Google Calendar của tôi một sự kiện: 'Họp Review Sprint K4' vào lúc 09:00 ngày 20/09/2026 trên Google Meet.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Đã tạo thành công sự kiện 'Họp Review Sprint K4' trên Google Calendar vào lúc 09:00 20/09/2026 (Địa điểm: Google Meet).",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tìm xem trên kênh Discord hoặc Zalo có thông báo nào về 'Lịch thuyết trình đồ án' không, nếu có hãy tự động thêm lịch đó vào Google Calendar giúp tôi.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "search_notifications",
+    "arguments": {
+      "platform": "all",
+      "query": "Lịch thuyết trình đồ án"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "count": 1,
+      "platform_filter": "all",
+      "query": "Lịch thuyết trình đồ án",
+      "data": [
+        {
+          "id": "NOTIF-DC-02",
+          "platform": "discord",
+          "sender": "Mentor AI Lab (Channel #announcements)",
+          "title": "Lịch thuyết trình đồ án Khóa K4",
+          "content": "Nhắc nhở toàn bộ học viên: Lịch thuyết trình đồ án diễn ra vào lúc 08:30 ngày 25/09/2026 trên Google Meet phòng Lab 1.",
+          "timestamp": "10:15 13/09/2026"
+        }
+      ],
+      "message": "Tìm thấy 1 thông báo khớp với từ khóa 'Lịch thuyết trình đồ án'."
+    },
+    "latency_ms": 3854.33
+  },
+  {
+    "step": 2,
+    "query": "Tìm xem trên kênh Discord hoặc Zalo có thông báo nào về 'Lịch thuyết trình đồ án' không, nếu có hãy tự động thêm lịch đó vào Google Calendar giúp tôi.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Tìm thấy 1 thông báo khớp với từ khóa 'Lịch thuyết trình đồ án'.\n- [DISCORD] Lịch thuyết trình đồ án Khóa K4: Nhắc nhở toàn bộ học viên: Lịch thuyết trình đồ án diễn ra vào lúc 08:30 ngày 25/09/2026 trên Google Meet phòng Lab 1. (Thời gian: 10:15 13/09/2026)",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tìm kiếm các thông báo liên quan đến 'chuyến bay du lịch Sao Hỏa' trên kênh Email của tôi.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "search_notifications",
+    "arguments": {
+      "platform": "email",
+      "query": "chuyến bay du lịch Sao Hỏa"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "count": 0,
+      "platform_filter": "email",
+      "query": "chuyến bay du lịch Sao Hỏa",
+      "message": "Không tìm thấy thông báo nào liên quan đến từ khóa 'chuyến bay du lịch Sao Hỏa' trên kênh 'email'."
+    },
+    "latency_ms": 2863.63
+  },
+  {
+    "step": 2,
+    "query": "Tìm kiếm các thông báo liên quan đến 'chuyến bay du lịch Sao Hỏa' trên kênh Email của tôi.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Không tìm thấy thông báo nào liên quan đến từ khóa 'chuyến bay du lịch Sao Hỏa' trên kênh 'email'.",
     "latency_ms": 10.0
   }
 ]

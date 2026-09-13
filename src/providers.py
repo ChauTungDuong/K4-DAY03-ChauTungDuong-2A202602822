@@ -32,13 +32,64 @@ class MockOfflineProvider(BaseLLMProvider):
         self.model_name = "Offline-Mock-Model-2026"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        return f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. (Chế độ Chatbot không có Tool tra cứu dữ liệu thời gian thực)."
+        return (
+            f"[Mock Chatbot Response]: Xin chào! Tôi là Trợ lý theo dõi thông báo. "
+            f"Tôi đã nhận được câu hỏi: '{prompt}'. Tuy nhiên, ở chế độ Chatbot cơ bản, tôi không có quyền truy cập dữ liệu thời gian thực hoặc tạo lịch Google Calendar."
+        )
 
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Test Case 1: Hỏi chung về kênh và chức năng
+        if "kênh nào" in prompt_lower or "chức năng" in prompt_lower or "hỗ trợ theo dõi" in prompt_lower:
+            return {
+                "type": "text",
+                "content": (
+                    "Xin chào! Tôi là Trợ lý Thông minh hỗ trợ theo dõi và tổng hợp thông báo từ 4 kênh chính: "
+                    "Discord, Email, Zalo và GitHub. Ngoài ra, tôi có thể tự động phát hiện lịch họp/deadline từ thông báo "
+                    "để hỗ trợ bạn lên lịch trực tiếp vào Google Calendar!"
+                ),
+                "thought": "Người dùng hỏi về các kênh hỗ trợ và chức năng chung. Trả lời trực tiếp từ System Prompt mà không cần gọi Tool."
+            }
+        # Test Case 2: Tìm kiếm thông báo trên GitHub (pull request / release)
+        elif "pull request" in prompt_lower or "release" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "search_notifications",
+                "arguments": {"platform": "github", "query": "release"},
+                "thought": "Người dùng muốn tra cứu thông báo liên quan đến release hoặc pull request trên kênh GitHub. Tôi sẽ gọi tool search_notifications."
+            }
+        # Test Case 3: Thêm sự kiện vào Google Calendar
+        elif "google calendar" in prompt_lower and ("thêm" in prompt_lower or "review sprint" in prompt_lower or "họp" in prompt_lower):
+            return {
+                "type": "tool_call",
+                "tool_name": "create_calendar_event",
+                "arguments": {
+                    "title": "Họp Review Sprint K4",
+                    "datetime_str": "09:00 20/09/2026",
+                    "location_or_link": "Google Meet",
+                    "description": "Họp Review Sprint K4 qua Google Meet."
+                },
+                "thought": "Người dùng yêu cầu lên lịch sự kiện 'Họp Review Sprint K4' vào Google Calendar. Tôi sẽ gọi tool create_calendar_event."
+            }
+        # Test Case 4: Lịch thuyết trình đồ án (Multi-step reasoning: Tìm thông báo trước)
+        elif "thuyết trình" in prompt_lower or "đồ án" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "search_notifications",
+                "arguments": {"platform": "all", "query": "thuyết trình"},
+                "thought": "Người dùng yêu cầu tìm thông báo về Lịch thuyết trình đồ án để thêm vào Google Calendar. Bước 1: Tra cứu thông báo liên quan."
+            }
+        # Test Case 5: Edge case tìm kiếm không tồn tại (sao hỏa)
+        elif "sao hỏa" in prompt_lower or "du lịch" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "search_notifications",
+                "arguments": {"platform": "email", "query": "chuyến bay du lịch Sao Hỏa"},
+                "thought": "Người dùng muốn tìm thông báo về chuyến bay du lịch Sao Hỏa trên Email. Tôi sẽ gọi tool search_notifications để kiểm tra."
+            }
+        # Tương thích học vụ cũ
+        elif "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
             return {
                 "type": "tool_call",
                 "tool_name": "schedule_appointment",
@@ -55,8 +106,8 @@ class MockOfflineProvider(BaseLLMProvider):
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": "[Mock Agent Response]: Xin chào! Tôi có thể hỗ trợ bạn tìm kiếm thông báo trên Discord, Email, Zalo, GitHub và thêm lịch Google Calendar.",
+                "thought": "Câu hỏi chung, trả lời trực tiếp."
             }
 
 
